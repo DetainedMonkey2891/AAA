@@ -37,7 +37,7 @@ local Library = {
 
     Black = Color3.new(0, 0, 0);
 
-    Font = Enum.Font.Arcade;
+    Font = Enum.Font.SpecialElite;
 
     OpenedFrames = {};
     DependencyBoxes = {};
