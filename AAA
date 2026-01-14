@@ -26,7 +26,6 @@ getgenv().Options = Options;
 local Library = {
     Registry = {};
     RegistryMap = {};
-
     HudRegistry = {};
 
     FontColor = Color3.fromRGB(255, 255, 255);
@@ -34,17 +33,18 @@ local Library = {
     BackgroundColor = Color3.fromRGB(20, 20, 20);
     AccentColor = Color3.fromRGB(0, 85, 255);
     OutlineColor = Color3.fromRGB(50, 50, 50);
-    RiskColor = Color3.fromRGB(255, 50, 50),
+    RiskColor = Color3.fromRGB(255, 50, 50);
 
     Black = Color3.new(0, 0, 0);
-    Font = Enum.Font.Gotham,
+
+    Font = Enum.Font.Gotham;
+    _LastFont = Enum.Font.Gotham; -- cache
 
     OpenedFrames = {};
     DependencyBoxes = {};
-
     Signals = {};
     ScreenGui = ScreenGui;
-};
+}
 
 local RainbowStep = 0
 local Hue = 0
@@ -2931,6 +2931,27 @@ function Library:Notify(Text, Time)
         NotifyOuter:Destroy();
     end);
 end;
+
+function Library:RegisterText(object)
+    if object:IsA("TextLabel") or object:IsA("TextButton") or object:IsA("TextBox") then
+        object.Font = Library.Font
+        table.insert(self.Registry, object)
+    end
+end
+
+Library.Signals.FontHeartbeat = RunService.Heartbeat:Connect(function()
+    if Library.Font == Library._LastFont then
+        return
+    end
+
+    Library._LastFont = Library.Font
+
+    for _, obj in ipairs(Library.Registry) do
+        if obj and obj.Parent then
+            obj.Font = Library.Font
+        end
+    end
+end)
 
 function Library:CreateWindow(...)
     local Arguments = { ... }
