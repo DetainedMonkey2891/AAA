@@ -38,7 +38,6 @@ local Library = {
     Black = Color3.new(0, 0, 0);
 
     Font = Enum.Font.Gotham;
-    _LastFont = Enum.Font.Gotham;
 
     OpenedFrames = {};
     DependencyBoxes = {};
@@ -2931,47 +2930,6 @@ function Library:Notify(Text, Time)
         NotifyOuter:Destroy();
     end);
 end;
-
-function Library:RegisterText(object)
-    if object:IsA("TextLabel") or object:IsA("TextButton") or object:IsA("TextBox") then
-        object.Font = Library.Font
-        table.insert(self.Registry, object)
-    end
-end
-
-Library.Signals.FontHeartbeat = RunService.Heartbeat:Connect(function()
-    if Library.Font == Library._LastFont then
-        return
-    end
-
-    Library._LastFont = Library.Font
-
-    for _, obj in ipairs(Library.Registry) do
-        if obj and obj.Parent then
-            Library:ApplyFont(obj)
-        end
-    end
-
-    for _, obj in ipairs(Library.HudRegistry) do
-        if obj and obj.Parent then
-            Library:ApplyFont(obj)
-        end
-    end
-end)
-
-function Library:ApplyFont(object)
-    if object:IsA("TextLabel") or object:IsA("TextButton") or object:IsA("TextBox") then
-        object.FontFace = Font.new(Library.Font)
-        object.Font = Library.Font
-    end
-end
-
-function Library:RegisterHudText(object)
-    if object:IsA("TextLabel") or object:IsA("TextButton") or object:IsA("TextBox") then
-        self:ApplyFont(object)
-        table.insert(self.HudRegistry, object)
-    end
-end
 
 function Library:CreateWindow(...)
     local Arguments = { ... }
